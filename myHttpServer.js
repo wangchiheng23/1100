@@ -13,8 +13,8 @@ const server=http.createServer((req,res)=> {
     }
     else if(req.url=="/icon.ico"){
       res.statusCode = 200;
-      res.setHeader('Content-Type','text/img')
-      var fsData=fs.readFile("icon.ico",(err,fsData)=>{
+      res.setHeader('Content-Type','text/html')
+      var fsData=fs.readFile("form1.html",(err,fsData)=>{
         if(err){
           console.log("read file error.")
           throw err
@@ -29,12 +29,22 @@ const server=http.createServer((req,res)=> {
     else if(req.url.slice(0,6)=="/input"){
       res.statusCode=200;
       let url1=req.url.split("?")
-      let urlquery=url1[1].split("&");
+      let obquery=querystring.parse(url1[1]);
+      if(obquery.submit1=="Save"){
+        fs.writeFile('./savefile',obquery.name123,'w',(err)=>{
+          if(err) console.log("Write file err!")
+          else console.log("Write file success!")
+        })
+      }
+      else {
+        fs.appendFile('./savefile',obquery.name123,'w',(err)=>{
+            if(err) console.log("Append file err!")
+            else console.log("Append file success!")
+          })
+      }
       res.setHeader("Content-Type","text/html")
-      //
-      res.write(url1[0]+"<br>");
-      res.write(url1[1]+"<br>");
-      var fsData=fs.readSync()
+      res.write(obquery.name123+"<br>");
+      res.write(obquery.submit1+"<br>");
       res.end("submit success")
     }
     else{
